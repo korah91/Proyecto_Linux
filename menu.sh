@@ -17,7 +17,9 @@ function instalarNGINX()
         echo "nginx ya estaba instalado"
     fi
 }
-
+###########################################################
+#                  2) ARRANCAR NGINX                     #
+###########################################################
 function arrancarNGINX()
 {
     # Mira a ver si está arrancado
@@ -28,6 +30,27 @@ function arrancarNGINX()
        sudo sudo systemctl start nginx
     else
         echo "nginx ya estaba arrancado"
+    fi
+}
+
+###########################################################
+#                  3) TESTEAR PUERTOS NGINX               #
+###########################################################
+
+function TestearPuertosNGINX(){
+    # SS devuelve los servicios y los puertos que utilizan
+    # 1. filtro por el nombre nginx
+    # 2. awk lee la columna numero 5 (ip:puerto)
+    # 3. cut -d’:’ -f 2 
+    #       Delimitador : para cortar la ip:puerto en dos 
+    #       Luego -f 2 se queda con la segunda parte (puerto)
+    aux = $(ss -lpn | grep nginx | awk '{print $ 5}' | cut -d':' -f 2)
+
+    if[ -z "$aux"]
+    then
+        echo "Todavia no se ha arrancado NGINX"
+    else
+        echo "NGINX usa el puerto ${aux}"
     fi
 }
 
