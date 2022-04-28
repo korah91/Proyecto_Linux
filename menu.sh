@@ -60,6 +60,16 @@ function TestearPuertosNGINX(){
 }
 
 ###########################################################
+#                  4) Visualizar Index                    #
+###########################################################
+function visualizarIndex(){
+    echo -e "Abriendo firefox en localhost:80 ...\n"
+    firefox http://localhost:80
+}
+
+
+
+###########################################################
 #               13) Configura gunicorn                    #
 ###########################################################
 function configurarGunicorn()
@@ -261,9 +271,11 @@ opcionmenuppal=0
 while test $opcionmenuppal -ne 23
 do
     #Muestra el menu
+    echo -e "###################################################"
     echo -e "1) Instala nginX \n"
     echo -e "2) Arranca nginX \n"
     echo -e "3) Testear puertos nginX \n"
+    echo -e "4) Visualizar el Index\n"
     echo -e "13) Configura gunicorn \n"
     echo -e "14) Establece permisos \n"
     echo -e "15) Crea servicio flask \n"
@@ -271,10 +283,12 @@ do
     echo -e "17) Carga ficheros de configuración \n"
     echo -e "23) fin \n"
     read -p "Elige una opcion:" opcionmenuppal
+    echo -e "###################################################\n"
     case $opcionmenuppal in
             1) instalarNGINX;;
             2) arrancarNGINX;;
             3) TestearPuertosNGINX;;
+            4) visualizarIndex;;
             13) configurarGunicorn;;
             14) pasarPropiedadyPermisos;;
             15) crearServicioSystemdFlask;;
