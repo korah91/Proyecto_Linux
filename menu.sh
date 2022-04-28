@@ -79,12 +79,14 @@ function personalizarIndex(){
 
 
 }
+
 ###########################################################
 #                  6) Crear nueva ubicación               #
 ###########################################################
 function crearNuevaUbicacion(){
 
 }
+
 ###########################################################
 #                  7) Ejecutar entorno virtual            #
 ###########################################################
@@ -99,6 +101,122 @@ function ejecutarEntornoVirtual(){
     #Activamos el entorno de desarrollo
     source venv/bin/activate
 }
+
+##################################################################################
+#               8) Instala librerias del entorno virtual                     #
+##################################################################################
+
+function instalarLibreriasEntornoVirtual()
+{
+    #Comprobar si pip ya esta en su ultima version
+    # si no, instalar
+     aux=$(python3 -m pip install --upgrade pip | grep "Requirement already up-to-date")
+     if [ -z "$aux" ]
+     then
+         echo "instalando pip en su ultima version..."
+     else
+         echo "pip ya estaba instalado en su ultima version..."
+         fi
+         
+        #Comprobar si las librerias ya estan instaladas
+        # si no, instalar
+     aux=$(pip show transformers[torch] | grep "Package(s) not found")
+     if [ -z "$aux" ]
+     then
+         echo "las librerias Transformers y PyTorch ya estaban instaladas. "
+     else
+         echo "instalando las librerias necesarias..."
+         pip install transformers[torch]
+         fi
+     
+     #desactivar el entorno virtual
+     echo "desactivando el entorno virtual..."
+     deactivate
+     echo "entorno virtual desactivado"
+}
+
+
+##################################################################################
+#               9) Copia ficheros del proyecto a la nueva ubicación                     #
+##################################################################################
+
+function copiarFicherosProyectoNuevaUbicacion()
+{
+    #Simplemente copia los ficheros a la ubicación nueva
+        echo "copiando la carpeta static a la nueva ubicacion..."
+       cp -R /var/www/analisisdesentimiento/public_html/static /var/www/EHU_analisisdesentimiento/public_html/
+       echo "copiando la carpeta templates a la nueva ubicacion..."
+         cp -R /var/www/analisisdesentimiento/public_html/templates/ /var/www/EHU_analisisdesentimiento/public_html/
+         echo "copiando el archivo webserviceanalizadordesentimiento.py a la nueva ubicacion..."
+    cp /var/www/analisisdesentimiento/public_html/webserviceanalizadordesentimiento.py /var/www/EHU_analisisdesentimiento/public_html/
+
+}
+
+
+###########################################################
+#               10) Instala Flask                     #
+###########################################################
+
+function instalarFlask()
+{
+    #Movernos al directorio adecuado
+     cd /var/www/EHU_analisisdesentimiento/public_html
+     
+     #Activar el entorno virtual
+     echo "activando en entorno virtual..."
+     source venv/bin/activate
+     
+     #Comprobar si flask ya está instalado
+     #Si no, instalarlo
+     aux=$(pip show flask | grep "Package(s) not found: flask")
+        if [ -z "$aux" ]
+        then
+           echo "flask ya estaba instalado"
+        else
+             echo "instalando flask..."
+             pip install flask
+        fi
+}
+
+
+###########################################################
+#               11) Prueba Flask                     #
+###########################################################
+
+function probarFlask()
+{
+    #Abre el navegador para que el usuario compruebe manualmente que funciona
+        echo "abriendo el navegador..."
+       echo "pulsar CTRL+C para detener el servidor de desarrollo Flask"
+         python3 webserviceanalizadordesentimiento.py
+         firefox http://127.0.0.1:5000/
+}
+
+
+###########################################################
+#               12) Instala gUnicorn                     #
+###########################################################
+
+function instalarGunicorn()
+{
+    #Movernos al directorio adecuado
+    cd /var/www/EHU_analisisdesentimiento/public_html
+    
+    #Activar el entorno virtual
+    source venv/bin/activate
+    
+    #Comprobar si gunicorn ya está instalado
+     #Si no, instalarlo
+        aux=$(pip show gunicorn | grep "Package(s) not found: gunicorn")
+        if [ -z "$aux" ]
+        then
+           echo "gunicorn ya estaba instalado"
+        else
+             echo "instalando gunicorn..."
+             pip install gunicorn
+        fi
+}
+
 
 ###########################################################
 #               13) Configura gunicorn                    #
@@ -295,6 +413,68 @@ function cargarFicherosConfiguracionNginx()
     echo "Se ha recargado el daemon nginx"
 }
 
+###########################################################
+#         18) Rearranca Nginx             #
+###########################################################
+function rearrancarNginx()
+{
+     echo "Arrancando el demonio NGINX...  \n"
+     sudo systemctl restart nginx
+     echo "NGINX arrancado"
+ }
+
+
+###########################################################
+#         19) Testea Virtual Hosts             #
+###########################################################
+function testearVirtualHost()
+ {
+     #Abre el navegador para que el usuario compruebe manualmente si funciona
+     echo "Comprobar el correcto funcionamiento \n"
+     firefox http://localhost:8888/
+}
+
+
+###########################################################
+#         20) Ver nGinx Logs             #
+###########################################################
+function verNginxLogs()
+ {
+     #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:
+     echo "Ventificar los archivos para encontrar el error... \n "
+     echo "Verifica los registros de error de Nginx: \n"
+     sudo less /var/log/nginx/error.log
+     echo "Verifica los registros de acceso de Nginx: \n"
+     sudo less /var/log/nginx/access.log
+     echo "Verifica los registros de proceso de Nginx: \n"
+     sudo journalctl -u nginx
+     echo "Verifica los registros del  proceso del proyecto Flask: \n"
+     sudo journalctl -u flask
+}
+
+
+###########################################################
+#         21) Controla intentos conexión SSH             #
+###########################################################
+function controlarIntentosConexionSSH()
+{
+    #Muestra por pantalla los intentos de conexión
+    echo "Imprimiendo los intentos de conexion... \n"
+    less /var/log/auth.log | grep "sshd"
+}
+
+
+###########################################################
+#         22) Sale del menú             #
+###########################################################
+function salirMenu()
+{
+    echo "Adios :) \n"
+    echo "Joel García, Diego Esteban, Maria Bogajo y Paula Pinto \n"
+
+}
+
+
 ### Main ###
 opcionmenuppal=0
 while test $opcionmenuppal -ne 23
@@ -308,11 +488,21 @@ do
     echo -e "5) Personalizar el Index\n"
     echo -e "6) Crear nueva ubicacion\n"
     echo -e "7) Ejecutar entorno virtual\n"
+    echo -e "8) Instala librerias del entorno virtual \n"
+    echo -e "9) Copia ficheros del proyecto a la nueva ubicación \n"
+    echo -e "10) Instala Flask \n"
+    echo -e "11) Prueba Flask \n"
+    echo -e "12) Instala gUnicorn \n"
     echo -e "13) Configura gunicorn \n"
     echo -e "14) Establece permisos \n"
     echo -e "15) Crea servicio flask \n"
     echo -e "16) Configura proxy inverso \n"
     echo -e "17) Carga ficheros de configuración \n"
+    echo -e "18) Rearranca Nginx \n"
+    echo -e "19) Testea Virtual Hosts \n"
+    echo -e "20) Ver nGinx Logs \n"
+    echo -e "21) Controla intentos conexión SSH \n"
+    echo -e "22) Sale del menú \n"
     echo -e "23) fin \n"
     read -p "Elige una opcion:" opcionmenuppal
     echo -e "###################################################\n"
@@ -324,11 +514,21 @@ do
             5) personalizarIndex;;
             6) crearNuevaUbicacion;;
             7) ejecutarEntornoVirtual;;
+            8) instalarLibreriasEntornoVirtual;;
+            9) copiarFicherosProyectoNuevaUbicacion;;
+            10) instalarFlask;;
+            11) probarFlask;;
+            12) instalarGunicorn;;
             13) configurarGunicorn;;
             14) pasarPropiedadyPermisos;;
             15) crearServicioSystemdFlask;;
             16) configurarNginxProxyInverso;;
             17) cargarFicherosConfiguracionNginx;;
+            18) rearrancarNginx;;
+            19) testearVirtualHost;;
+            20) verNginxLogs;;
+            21) controlarIntentosConexionSSH;;
+            22) salirMenu;;
             23) fin;;
             *) ;;
 
