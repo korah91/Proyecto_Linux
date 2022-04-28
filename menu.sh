@@ -67,7 +67,39 @@ function visualizarIndex(){
     firefox http://localhost:80
 }
 
+###########################################################
+#                  5) Personalizar Index                  #
+###########################################################
+function personalizarIndex(){
+    sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+    #Copio el index que ya funciona a la carpeta de producción
+# esto esta mal lo tengo que mirar    sudo cp index.html
 
+    #Concedo los permisos
+    sudo chown -R $USER:$GROUP /var/www/EHU_analisisdesentimiento/public_html
+
+
+}
+###########################################################
+#                  6) Crear nueva ubicación               #
+###########################################################
+function crearNuevaUbicacion(){
+
+}
+###########################################################
+#                  7) Ejecutar entorno virtual            #
+###########################################################
+function ejecutarEntornoVirtual(){
+    # Actualizamos todo
+    sudo apt -y upgrade
+    # Descargamos el pip de python y otras herramientas de desarrollo python
+    sudo apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv
+    # Creamos el entorno de desarrollo
+    cd /var/www/EHU_analisisdesentimiento/public_html
+    virtualenv -p python3 venv
+    #Activamos el entorno de desarrollo
+    source venv/bin/activate
+}
 
 ###########################################################
 #               13) Configura gunicorn                    #
@@ -276,6 +308,9 @@ do
     echo -e "2) Arranca nginX \n"
     echo -e "3) Testear puertos nginX \n"
     echo -e "4) Visualizar el Index\n"
+    echo -e "5) Personalizar el Index\n"
+    echo -e "6) Crear nueva ubicacion\n"
+    echo -e "7) Ejecutar entorno virtual\n"
     echo -e "13) Configura gunicorn \n"
     echo -e "14) Establece permisos \n"
     echo -e "15) Crea servicio flask \n"
@@ -289,6 +324,9 @@ do
             2) arrancarNGINX;;
             3) TestearPuertosNGINX;;
             4) visualizarIndex;;
+            5) personalizarIndex;;
+            6) crearNuevaUbicacion;;
+            7) ejecutarEntornoVirtual;;
             13) configurarGunicorn;;
             14) pasarPropiedadyPermisos;;
             15) crearServicioSystemdFlask;;
