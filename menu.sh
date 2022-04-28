@@ -71,6 +71,16 @@ function visualizarIndex(){
 #                  5) Personalizar Index                  #
 ###########################################################
 function personalizarIndex(){
+
+    # Reemplazo el index.html actual
+    sudo cp index.html /var/www/html/index.html
+    # falta hacer toda la pagina  y eso
+    firefox firefox http://127.0.0.1/index.html 
+}
+###########################################################
+#                  6) Crear nueva ubicación               #
+###########################################################
+function crearNuevaUbicacion(){
     # Creo la carpeta de produccion
     sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
 
@@ -78,12 +88,7 @@ function personalizarIndex(){
     sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
 
 
-}
-###########################################################
-#                  6) Crear nueva ubicación               #
-###########################################################
-function crearNuevaUbicacion(){
-
+    # creo que ya esta terminado 
 }
 ###########################################################
 #                  7) Ejecutar entorno virtual            #
