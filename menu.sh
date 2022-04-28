@@ -14,7 +14,7 @@ function instalarNGINX()
        echo "instalando ..."
        sudo apt install nginx
     else
-        echo "nginx ya estaba instalado"
+        printf "nginx ya estaba instalado\n"
     fi
 }
 ###########################################################
@@ -44,8 +44,8 @@ function TestearPuertosNGINX(){
     #       Delimitador : para cortar la ip:puerto en dos 
     #       Luego -f 2 se queda con la segunda parte (puerto)
     aux = $(ss -lpn | grep nginx | awk '{print $ 5}' | cut -d':' -f 2)
-
-    if [ -z "$aux"]
+ 
+    if [ -z "$aux"]x
     then
         echo "Todavia no se ha arrancado NGINX"
     else
