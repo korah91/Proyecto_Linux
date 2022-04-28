@@ -64,7 +64,7 @@ function configurarGunicorn()
     then 
        echo "creando wsgi.py ..."
        # crea el archivo wsgi.py con este contenido
-       echo -e "from webserviceanalizadordesentimiento import app 
+       sudo echo -e "from webserviceanalizadordesentimiento import app 
 if __name__ == \"__main__\":
    app.run()
 " > /var/www/EHU_analisisdesentimiento/wsgi.py
@@ -75,17 +75,16 @@ if __name__ == \"__main__\":
         echo "Bórralo en /var/www/EHU_analisisdesentimiento/wsgi.py"
         echo "Con: sudo rm /var/www/EHU_analisisdesentimiento/wsgi.py"
         echo "Y vuelve a ejecutar la opción 15)"
+        echo
     fi
     
     echo "Configurando gunicorn ..."
     # Mira a ver si ya está configurado gunicorn. Si lo está reconfigurarlo dará un error
     # si no estaba configurado, se configura
-    aux=$(gunicorn --bind 0.0.0.0:5000 wsgi:app | grep "[ERROR] Connection in use")
+    aux=$(gunicorn --bind 0.0.0.0:5000 wsgi:app 2>&1 | grep "\[ERROR\] Connection in use")
     if [ -n "$aux" ] # Si da ese error, grep devolverá un string no vacío
     then 
         echo "Gunicorn ya estaba configurado"
-        echo "Volviendo a configurar gunicorn por si acaso"
-        #sig -s 9
     else
         echo "Se ha configurado gunicorn"
     fi
@@ -224,14 +223,12 @@ function configurarNginxProxyInverso()
     echo ""
     echo "Comprobando que la configuración del proxy inverso es correcta ..."
     # Mira a ver si se ha configurado correctamente
-    aux=$(sudo nginx -t |grep "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    aux=$(sudo nginx -t 2>&1 | grep "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful")
-
     if [ -z "$aux" ] # Si no se ha configurado correctamente, grep devolverá un string vacío
     then
         # Si no está configurado correctamente, significa que
         # el usuario debería arreglar el problema
-    then 
         echo "Hay algún error en los archivos de nginx"
         echo "Escribe: sudo nginx -t"
         echo "Para más detalles"
