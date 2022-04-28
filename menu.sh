@@ -14,7 +14,7 @@ function instalarNGINX()
        echo "instalando ..."
        sudo apt install nginx
     else
-        printf "nginx ya estaba instalado\n"
+        echo -e "nginx ya estaba instalado\n"
     fi
 }
 ###########################################################
@@ -26,10 +26,11 @@ function arrancarNGINX()
     aux=$(sudo systemctl status nginx | grep "Active: active (running)")
     if [ -z "$aux" ] # si no está arrancado, grep devolverá un string vacío
     then 
-       echo "arrancando ..."
+       echo -e "arrancando ...\n"
        sudo sudo systemctl start nginx
+       echo -e "se ha arrancado NGINX"
     else
-        echo "nginx ya estaba arrancado"
+        echo -e "nginx ya estaba arrancado\n"
     fi
 }
 
@@ -37,20 +38,67 @@ function arrancarNGINX()
 #                  3) TESTEAR PUERTOS NGINX               #
 ###########################################################
 function TestearPuertosNGINX(){
-    # SS devuelve los servicios y los puertos que utilizan
-    # 1. filtro por el nombre nginx
-    # 2. awk lee la columna numero 5 (ip:puerto)
-    # 3. cut -d’:’ -f 2 
-    #       Delimitador : para cortar la ip:puerto en dos 
-    #       Luego -f 2 se queda con la segunda parte (puerto)
-    aux = $(ss -lpn | grep nginx | awk '{print $ 5}' | cut -d':' -f 2)
- 
-    if [ -z "$aux"]x
+    # Primero compruebo si netstat esta instalado
+    aux=$( dpkg -l | grep net-tools)
+
+    if [ -z "$aux" ]
+    then
+        echo -e "Se ha instalado netstat\n"
+        sudo apt install -y net-tools
+    fi
+    # tanp Para ver solo conexiones TCP que están Escuchando
+    # Con awk leo la columna de la direccion y con cut el puerto
+    # Leo solo el primer resultado con head -1
+    aux=$(sudo netstat -tanp | grep nginx | awk '{print $ 4}' | cut -d':' -f 2 | head -1)
+
+    if [ -z "$aux" ] 
     then
         echo "Todavia no se ha arrancado NGINX"
     else
-        echo "NGINX usa el puerto ${aux}"
+        echo -e "NGINX usa el puerto ${aux}\n"
     fi
+}
+
+###########################################################
+#                  4) Visualizar Index                    #
+###########################################################
+function visualizarIndex(){
+    echo -e "Abriendo firefox en localhost:80 ...\n"
+    firefox http://localhost:80
+}
+
+###########################################################
+#                  5) Personalizar Index                  #
+###########################################################
+function personalizarIndex(){
+    sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+    #Copio el index que ya funciona a la carpeta de producción
+# esto esta mal lo tengo que mirar    sudo cp index.html
+
+    #Concedo los permisos
+    sudo chown -R $USER:$GROUP /var/www/EHU_analisisdesentimiento/public_html
+
+
+}
+###########################################################
+#                  6) Crear nueva ubicación               #
+###########################################################
+function crearNuevaUbicacion(){
+
+}
+###########################################################
+#                  7) Ejecutar entorno virtual            #
+###########################################################
+function ejecutarEntornoVirtual(){
+    # Actualizamos todo
+    sudo apt -y upgrade
+    # Descargamos el pip de python y otras herramientas de desarrollo python
+    sudo apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv
+    # Creamos el entorno de desarrollo
+    cd /var/www/EHU_analisisdesentimiento/public_html
+    virtualenv -p python3 venv
+    #Activamos el entorno de desarrollo
+    source venv/bin/activate
 }
 
 ###########################################################
@@ -253,8 +301,14 @@ opcionmenuppal=0
 while test $opcionmenuppal -ne 23
 do
     #Muestra el menu
+    echo -e "###################################################"
     echo -e "1) Instala nginX \n"
     echo -e "2) Arranca nginX \n"
+    echo -e "3) Testear puertos nginX \n"
+    echo -e "4) Visualizar el Index\n"
+    echo -e "5) Personalizar el Index\n"
+    echo -e "6) Crear nueva ubicacion\n"
+    echo -e "7) Ejecutar entorno virtual\n"
     echo -e "13) Configura gunicorn \n"
     echo -e "14) Establece permisos \n"
     echo -e "15) Crea servicio flask \n"
@@ -262,9 +316,15 @@ do
     echo -e "17) Carga ficheros de configuración \n"
     echo -e "23) fin \n"
     read -p "Elige una opcion:" opcionmenuppal
+    echo -e "###################################################\n"
     case $opcionmenuppal in
             1) instalarNGINX;;
             2) arrancarNGINX;;
+            3) TestearPuertosNGINX;;
+            4) visualizarIndex;;
+            5) personalizarIndex;;
+            6) crearNuevaUbicacion;;
+            7) ejecutarEntornoVirtual;;
             13) configurarGunicorn;;
             14) pasarPropiedadyPermisos;;
             15) crearServicioSystemdFlask;;
