@@ -45,7 +45,7 @@ function TestearPuertosNGINX(){
     #       Luego -f 2 se queda con la segunda parte (puerto)
     aux = $(ss -lpn | grep nginx | awk '{print $ 5}' | cut -d':' -f 2)
 
-    if[ -z "$aux"]
+    if [ -z "$aux"]
     then
         echo "Todavia no se ha arrancado NGINX"
     else
@@ -228,6 +228,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful")
     if [ -z "$aux" ] # Si no se ha configurado correctamente, grep devolverá un string vacío
         # Si no está configurado correctamente, significa que
         # el usuario debería arreglar el problema
+    then 
         echo "Hay algún error en los archivos de nginx"
         echo "Escribe: sudo nginx -t"
         echo "Para más detalles"
