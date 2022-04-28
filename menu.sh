@@ -84,6 +84,8 @@ if __name__ == \"__main__\":
     if [ -n "$aux" ] # Si da ese error, grep devolverá un string no vacío
     then 
         echo "Gunicorn ya estaba configurado"
+        echo "Volviendo a configurar gunicorn por si acaso"
+        #sig -s 9
     else
         echo "Se ha configurado gunicorn"
     fi
@@ -226,6 +228,7 @@ function configurarNginxProxyInverso()
 nginx: configuration file /etc/nginx/nginx.conf test is successful")
 
     if [ -z "$aux" ] # Si no se ha configurado correctamente, grep devolverá un string vacío
+    then
         # Si no está configurado correctamente, significa que
         # el usuario debería arreglar el problema
     then 
