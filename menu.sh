@@ -71,12 +71,11 @@ function visualizarIndex(){
 #                  5) Personalizar Index                  #
 ###########################################################
 function personalizarIndex(){
+    # Creo la carpeta de produccion
     sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
-    #Copio el index que ya funciona a la carpeta de producción
-# esto esta mal lo tengo que mirar    sudo cp index.html
 
     #Concedo los permisos
-    sudo chown -R $USER:$GROUP /var/www/EHU_analisisdesentimiento/public_html
+    sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
 
 
 }
