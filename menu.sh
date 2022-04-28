@@ -14,7 +14,7 @@ function instalarNGINX()
        echo "instalando ..."
        sudo apt install nginx
     else
-        printf "nginx ya estaba instalado\n"
+        echo -e "nginx ya estaba instalado\n"
     fi
 }
 ###########################################################
@@ -26,10 +26,11 @@ function arrancarNGINX()
     aux=$(sudo systemctl status nginx | grep "Active: active (running)")
     if [ -z "$aux" ] # si no está arrancado, grep devolverá un string vacío
     then 
-       echo "arrancando ..."
+       echo -e "arrancando ...\n"
        sudo sudo systemctl start nginx
+       echo -e "se ha arrancado NGINX"
     else
-        echo "nginx ya estaba arrancado"
+        echo -e "nginx ya estaba arrancado\n"
     fi
 }
 
@@ -37,19 +38,24 @@ function arrancarNGINX()
 #                  3) TESTEAR PUERTOS NGINX               #
 ###########################################################
 function TestearPuertosNGINX(){
-    # SS devuelve los servicios y los puertos que utilizan
-    # 1. filtro por el nombre nginx
-    # 2. awk lee la columna numero 5 (ip:puerto)
-    # 3. cut -d’:’ -f 2 
-    #       Delimitador : para cortar la ip:puerto en dos 
-    #       Luego -f 2 se queda con la segunda parte (puerto)
-    aux = $(ss -lpn | grep nginx | awk '{print $ 5}' | cut -d':' -f 2)
- 
-    if [ -z "$aux"]x
+    # Primero compruebo si netstat esta instalado
+    aux=$( dpkg -l | grep net-tools)
+
+    if [ -z "$aux" ]
+    then
+        echo -e "Se ha instalado netstat\n"
+        sudo apt install -y net-tools
+    fi
+    # tanp Para ver solo conexiones TCP que están Escuchando
+    # Con awk leo la columna de la direccion y con cut el puerto
+    # Leo solo el primer resultado con head -1
+    aux=$(sudo netstat -tanp | grep nginx | awk '{print $ 4}' | cut -d':' -f 2 | head -1)
+
+    if [ -z "$aux" ] 
     then
         echo "Todavia no se ha arrancado NGINX"
     else
-        echo "NGINX usa el puerto ${aux}"
+        echo -e "NGINX usa el puerto ${aux}\n"
     fi
 }
 
@@ -230,8 +236,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful")
     if [ -z "$aux" ] # Si no se ha configurado correctamente, grep devolverá un string vacío
     then
         # Si no está configurado correctamente, significa que
-        # el usuario debería arreglar el problema
-    then 
+        # el usuario debería arreglar el problema 
         echo "Hay algún error en los archivos de nginx"
         echo "Escribe: sudo nginx -t"
         echo "Para más detalles"
@@ -258,6 +263,7 @@ do
     #Muestra el menu
     echo -e "1) Instala nginX \n"
     echo -e "2) Arranca nginX \n"
+    echo -e "3) Testear puertos nginX \n"
     echo -e "13) Configura gunicorn \n"
     echo -e "14) Establece permisos \n"
     echo -e "15) Crea servicio flask \n"
@@ -268,6 +274,7 @@ do
     case $opcionmenuppal in
             1) instalarNGINX;;
             2) arrancarNGINX;;
+            3) TestearPuertosNGINX;;
             13) configurarGunicorn;;
             14) pasarPropiedadyPermisos;;
             15) crearServicioSystemdFlask;;
