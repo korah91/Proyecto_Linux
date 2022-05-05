@@ -75,7 +75,7 @@ function personalizarIndex(){
     # Reemplazo el index.html actual
     sudo cp index.html /var/www/html/index.html
     # falta hacer toda la pagina  y eso
-    firefox firefox http://127.0.0.1/index.html 
+    firefox http://127.0.0.1/index.html 
 }
 
 ###########################################################
@@ -115,29 +115,29 @@ function instalarLibreriasEntornoVirtual()
 {
     #Comprobar si pip ya esta en su ultima version
     # si no, instalar
-     aux=$(python3 -m pip install --upgrade pip | grep "Requirement already up-to-date")
-     if [ -z "$aux" ]
-     then
-         echo "instalando pip en su ultima version..."
-     else
-         echo "pip ya estaba instalado en su ultima version..."
-         fi
+    aux=$(python3 -m pip install --upgrade pip | grep "Requirement already up-to-date")
+    if [ -z "$aux" ]
+    then
+        echo "instalando pip en su ultima version..."
+    else
+        echo "pip ya estaba instalado en su ultima version..."
+    fi
          
-        #Comprobar si las librerias ya estan instaladas
-        # si no, instalar
-     aux=$(pip show transformers[torch] | grep "Package(s) not found")
-     if [ -z "$aux" ]
-     then
-         echo "las librerias Transformers y PyTorch ya estaban instaladas. "
-     else
-         echo "instalando las librerias necesarias..."
-         pip install transformers[torch]
-         fi
+    #Comprobar si las librerias ya estan instaladas
+    # si no, instalar
+    aux=$(pip show transformers[torch] | grep "Package(s) not found")
+    if [ -z "$aux" ]
+    then
+        echo "las librerias Transformers y PyTorch ya estaban instaladas. "
+    else
+        echo "instalando las librerias necesarias..."
+        pip install transformers[torch]
+    fi
      
-     #desactivar el entorno virtual
-     echo "desactivando el entorno virtual..."
-     deactivate
-     echo "entorno virtual desactivado"
+    #desactivar el entorno virtual
+    echo "desactivando el entorno virtual..."
+    deactivate
+    echo "entorno virtual desactivado"
 }
 
 
@@ -148,11 +148,11 @@ function instalarLibreriasEntornoVirtual()
 function copiarFicherosProyectoNuevaUbicacion()
 {
     #Simplemente copia los ficheros a la ubicación nueva
-        echo "copiando la carpeta static a la nueva ubicacion..."
-       cp -R /var/www/analisisdesentimiento/public_html/static /var/www/EHU_analisisdesentimiento/public_html/
-       echo "copiando la carpeta templates a la nueva ubicacion..."
-         cp -R /var/www/analisisdesentimiento/public_html/templates/ /var/www/EHU_analisisdesentimiento/public_html/
-         echo "copiando el archivo webserviceanalizadordesentimiento.py a la nueva ubicacion..."
+    echo "copiando la carpeta static a la nueva ubicacion..."
+    cp -R /var/www/analisisdesentimiento/public_html/static /var/www/EHU_analisisdesentimiento/public_html/
+    echo "copiando la carpeta templates a la nueva ubicacion..."
+    cp -R /var/www/analisisdesentimiento/public_html/templates/ /var/www/EHU_analisisdesentimiento/public_html/
+    echo "copiando el archivo webserviceanalizadordesentimiento.py a la nueva ubicacion..."
     cp /var/www/analisisdesentimiento/public_html/webserviceanalizadordesentimiento.py /var/www/EHU_analisisdesentimiento/public_html/
 
 }
@@ -165,22 +165,22 @@ function copiarFicherosProyectoNuevaUbicacion()
 function instalarFlask()
 {
     #Movernos al directorio adecuado
-     cd /var/www/EHU_analisisdesentimiento/public_html
+    cd /var/www/EHU_analisisdesentimiento/public_html
      
-     #Activar el entorno virtual
-     echo "activando en entorno virtual..."
-     source venv/bin/activate
+    #Activar el entorno virtual
+    echo "activando en entorno virtual..."
+    source venv/bin/activate
      
-     #Comprobar si flask ya está instalado
-     #Si no, instalarlo
-     aux=$(pip show flask | grep "Package(s) not found: flask")
-        if [ -z "$aux" ]
-        then
-           echo "flask ya estaba instalado"
-        else
-             echo "instalando flask..."
-             pip install flask
-        fi
+    #Comprobar si flask ya está instalado
+    #Si no, instalarlo
+    aux=$(pip show flask | grep "Package(s) not found: flask")
+    if [ -z "$aux" ]
+    then
+        echo "flask ya estaba instalado"
+    else
+        echo "instalando flask..."
+        pip install flask
+    fi
 }
 
 
@@ -191,10 +191,10 @@ function instalarFlask()
 function probarFlask()
 {
     #Abre el navegador para que el usuario compruebe manualmente que funciona
-        echo "abriendo el navegador..."
-       echo "pulsar CTRL+C para detener el servidor de desarrollo Flask"
-         python3 webserviceanalizadordesentimiento.py
-         firefox http://127.0.0.1:5000/
+    echo "abriendo el navegador..."
+    echo "pulsar CTRL+C para detener el servidor de desarrollo Flask"
+    python3 webserviceanalizadordesentimiento.py
+    firefox http://127.0.0.1:5000/
 }
 
 
@@ -211,15 +211,15 @@ function instalarGunicorn()
     source venv/bin/activate
     
     #Comprobar si gunicorn ya está instalado
-     #Si no, instalarlo
-        aux=$(pip show gunicorn | grep "Package(s) not found: gunicorn")
-        if [ -z "$aux" ]
-        then
-           echo "gunicorn ya estaba instalado"
-        else
-             echo "instalando gunicorn..."
-             pip install gunicorn
-        fi
+    #Si no, instalarlo
+    aux=$(pip show gunicorn | grep "Package(s) not found: gunicorn")
+    if [ -z "$aux" ]
+    then
+        echo "gunicorn ya estaba instalado"
+    else
+        echo "instalando gunicorn..."
+        pip install gunicorn
+    fi
 }
 
 
@@ -423,9 +423,9 @@ function cargarFicherosConfiguracionNginx()
 ###########################################################
 function rearrancarNginx()
 {
-     echo "Arrancando el demonio NGINX...  \n"
-     sudo systemctl restart nginx
-     echo "NGINX arrancado"
+    echo "Arrancando el demonio NGINX...  \n"
+    sudo systemctl restart nginx
+    echo "NGINX arrancado"
  }
 
 
@@ -434,9 +434,9 @@ function rearrancarNginx()
 ###########################################################
 function testearVirtualHost()
  {
-     #Abre el navegador para que el usuario compruebe manualmente si funciona
-     echo "Comprobar el correcto funcionamiento \n"
-     firefox http://localhost:8888/
+    #Abre el navegador para que el usuario compruebe manualmente si funciona
+    echo "Comprobar el correcto funcionamiento \n"
+    firefox http://localhost:8888/
 }
 
 
@@ -445,16 +445,16 @@ function testearVirtualHost()
 ###########################################################
 function verNginxLogs()
  {
-     #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:
-     echo "Ventificar los archivos para encontrar el error... \n "
-     echo "Verifica los registros de error de Nginx: \n"
-     sudo less /var/log/nginx/error.log
-     echo "Verifica los registros de acceso de Nginx: \n"
-     sudo less /var/log/nginx/access.log
-     echo "Verifica los registros de proceso de Nginx: \n"
-     sudo journalctl -u nginx
-     echo "Verifica los registros del  proceso del proyecto Flask: \n"
-     sudo journalctl -u flask
+    #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:
+    echo "Ventificar los archivos para encontrar el error... \n "
+    echo "Verifica los registros de error de Nginx: \n"
+    sudo less /var/log/nginx/error.log
+    echo "Verifica los registros de acceso de Nginx: \n"
+    sudo less /var/log/nginx/access.log
+    echo "Verifica los registros de proceso de Nginx: \n"
+    sudo journalctl -u nginx
+    echo "Verifica los registros del  proceso del proyecto Flask: \n"
+    sudo journalctl -u flask
 }
 
 
@@ -536,7 +536,6 @@ do
             22) salirMenu;;
             23) fin;;
             *) ;;
-
     esac 
 done 
 
