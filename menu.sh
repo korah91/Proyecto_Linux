@@ -83,7 +83,13 @@ function personalizarIndex(){
 ###########################################################
 function crearNuevaUbicacion(){
     # Creo la carpeta de produccion
-    sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+    if [[ -d /var/www/EHU_analisisdesentimiento/public_html ]]
+    then
+        echo "Ya existe el directorio"
+    else
+        sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+    fi
+    echo "Creando ubicacion..."
 
     #Concedo los permisos
     sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
