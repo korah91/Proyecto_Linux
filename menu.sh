@@ -88,14 +88,12 @@ function crearNuevaUbicacion(){
         echo "Ya existe el directorio"
     else
         sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+        echo "Creando ubicacion..."
     fi
-    echo "Creando ubicacion..."
 
     #Concedo los permisos
+    echo "Concediendo permisos a l directorio..."
     sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
-
-
-    # creo que ya esta terminado 
 }
 
 ###########################################################
@@ -103,14 +101,26 @@ function crearNuevaUbicacion(){
 ###########################################################
 function ejecutarEntornoVirtual(){
     # Actualizamos todo
+    echo "Actualizando e instalando librerias..."
     sudo apt -y upgrade
     # Descargamos el pip de python y otras herramientas de desarrollo python
     sudo apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv
+    
     # Creamos el entorno de desarrollo
-    cd /var/www/EHU_analisisdesentimiento/public_html
-    virtualenv -p python3 venv
-    #Activamos el entorno de desarrollo
-    source venv/bin/activate
+    echo "Creando el Entorno..."
+    # y si no esta?
+    if [[ -d /var/www/EHU_analisisdesentimiento/public_html ]]
+    then 
+        cd /var/www/EHU_analisisdesentimiento/public_html
+        virtualenv -p python3 venv
+        #Activamos el entorno de desarrollo
+        source venv/bin/activate
+    else
+        echo "Creando la carpeta necesaria..."
+        sudo mkdir /var/www/EHU_analisisdesentimiento/public_html
+        echo "Concediendo permisos a l directorio..."
+        sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
+    fi    
 }
 
 ##################################################################################
