@@ -92,7 +92,7 @@ function crearNuevaUbicacion(){
     fi
 
     #Concedo los permisos
-    echo "Concediendo permisos a l directorio..."
+    echo "Concediendo permisos al directorio..."
     sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
 }
 
