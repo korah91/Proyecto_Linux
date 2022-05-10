@@ -120,7 +120,12 @@ function ejecutarEntornoVirtual(){
         sudo mkdir -p /var/www/EHU_analisisdesentimiento/public_html
         echo "Concediendo permisos a l directorio..."
         sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
-    fi    
+        
+        cd /var/www/EHU_analisisdesentimiento/public_html
+        virtualenv -p python3 venv
+        #Activamos el entorno de desarrollo
+        source venv/bin/activate
+    fi
 }
 
 ##################################################################################
@@ -141,7 +146,7 @@ function instalarLibreriasEntornoVirtual()
          
     #Comprobar si las librerias ya estan instaladas
     # si no, instalar
-    aux=$(pip show transformers[torch] | grep "Package(s) not found")
+    aux=$(pip show transformers[torch] 2>&1 | grep "Package(s) not found")
     if [ -z "$aux" ]
     then
         echo "las librerias Transformers y PyTorch ya estaban instaladas. "
@@ -209,8 +214,8 @@ function probarFlask()
     #Abre el navegador para que el usuario compruebe manualmente que funciona
     echo "abriendo el navegador..."
     echo "pulsar CTRL+C para detener el servidor de desarrollo Flask"
-    python3 /var/www/EHU_analisisdesentimiento/public_html/webserviceanalizadordesentimiento.py
     firefox http://127.0.0.1:5000/
+    python3 /var/www/EHU_analisisdesentimiento/public_html/webserviceanalizadordesentimiento.py
 }
 
 
@@ -245,7 +250,7 @@ function instalarGunicorn()
 function configurarGunicorn()
 {
     # Mira a ver si el archivo wsgi.py existe
-    aux=$(ls /var/www/EHU_analisisdesentimiento | grep "wsgi.py")
+    aux=$(ls /var/www/EHU_analisisdesentimiento/public_html | grep "wsgi.py")
     if [ -z "$aux" ] # si no existe, grep devolverá un string vacío
     then 
        echo "creando wsgi.py ..."
@@ -253,14 +258,14 @@ function configurarGunicorn()
        sudo echo -e "from webserviceanalizadordesentimiento import app 
 if __name__ == \"__main__\":
    app.run()
-" > /var/www/EHU_analisisdesentimiento/wsgi.py
-        echo "Se ha creado wsgi.py en /var/www/EHU_analisisdesentimiento/wsgi.py"
+" > /var/www/EHU_analisisdesentimiento/public_html/wsgi.py
+        echo "Se ha creado wsgi.py en /var/www/EHU_analisisdesentimiento/public_html/wsgi.py"
     else
         echo "wsgi.py ya existe"
         echo "Si crees que wsgi.py tiene algún problema"
-        echo "Bórralo en /var/www/EHU_analisisdesentimiento/wsgi.py"
-        echo "Con: sudo rm /var/www/EHU_analisisdesentimiento/wsgi.py"
-        echo "Y vuelve a ejecutar la opción 15)"
+        echo "Bórralo en /var/www/EHU_analisisdesentimiento/public_html/wsgi.py"
+        echo "Con: sudo rm /var/www/EHU_analisisdesentimiento/public_html/wsgi.py"
+        echo "Y vuelve a ejecutar la opción 13)"
         echo
     fi
     
@@ -287,22 +292,22 @@ if __name__ == \"__main__\":
 function pasarPropiedadyPermisos()
 {
     # Mira si el usuario y grupo es www-data
-    aux=$(ls -lias /var/www/EHU_analisisdesentimiento/public_html | grep "www-data www-data")
+    aux=$(ls -lias /var/www | grep "www-data www-data")
     if [ -z "$aux" ] # Si no lo es, grep devolverá un string vacío
     then 
         echo "Estableciendo propiedad ..."
-        sudo chown -R www-data:www-data /var/www/EHU_analisisdesentimiento/public_html
+        sudo chown -R www-data:www-data /var/www
         echo "Se ha establecido la propiedad"
     else
         echo "La propiedad ya estaba esablecida"
     fi
     
     # Mira si los permisos son exáctamente 775
-    aux=$(ls -lias /var/www/EHU_analisisdesentimiento/public_html | grep "rwxrwxr-x")
+    aux=$(ls -lias /var/www | grep "rwxrwxr-x")
     if [ -z "$aux" ] # Si no lo son, grep devolverá un string vacío
     then 
         echo "Estableciendo permisos ..."
-        chmod -R 775 /var/www/EHU_analisisdesentimiento/public_html
+        chmod -R 775 /var/www
         echo "Se han establecido los permisos"
     else
         echo "Los permisos ya estaban establecidos"
@@ -439,7 +444,7 @@ function cargarFicherosConfiguracionNginx()
 ###########################################################
 function rearrancarNginx()
 {
-    echo "Arrancando el demonio NGINX...  \n"
+    echo "Arrancando el demonio NGINX..."
     sudo systemctl restart nginx
     echo "NGINX arrancado"
  }
@@ -451,7 +456,7 @@ function rearrancarNginx()
 function testearVirtualHost()
  {
     #Abre el navegador para que el usuario compruebe manualmente si funciona
-    echo "Comprobar el correcto funcionamiento \n"
+    echo "Comprobar el correcto funcionamiento"
     firefox http://localhost:8888/
 }
 
@@ -462,7 +467,7 @@ function testearVirtualHost()
 function verNginxLogs()
  {
     #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:"
-    echo "Verifica los registros de error de Nginx: \n"
+    echo "Verifica los registros de error de Nginx:"
     sudo head -n 100 /var/log/nginx/error.log
 }
 
@@ -473,7 +478,7 @@ function verNginxLogs()
 function controlarIntentosConexionSSH()
 {
     #Muestra por pantalla los intentos de conexión
-    echo "Imprimiendo los intentos de conexion... \n"
+    echo "Imprimiendo los intentos de conexion..."
     less /var/log/auth.log | grep "sshd"
 }
 
@@ -484,7 +489,7 @@ function controlarIntentosConexionSSH()
 function salirMenu()
 {
     echo "Adios :) \n"
-    echo "Joel García, Diego Esteban, Maria Bogajo y Paula Pinto \n"
+    echo "Joel García, Diego Esteban, Maria Bogajo y Paula Pinto"
 
 }
 
