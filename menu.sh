@@ -461,16 +461,9 @@ function testearVirtualHost()
 ###########################################################
 function verNginxLogs()
  {
-    #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:
-    echo "Ventificar los archivos para encontrar el error... \n "
+    #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:"
     echo "Verifica los registros de error de Nginx: \n"
-    sudo less /var/log/nginx/error.log
-    echo "Verifica los registros de acceso de Nginx: \n"
-    sudo less /var/log/nginx/access.log
-    echo "Verifica los registros de proceso de Nginx: \n"
-    sudo journalctl -u nginx
-    echo "Verifica los registros del  proceso del proyecto Flask: \n"
-    sudo journalctl -u flask
+    sudo head -n 100 /var/log/nginx/error.log
 }
 
 
