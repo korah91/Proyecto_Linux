@@ -209,7 +209,7 @@ function probarFlask()
     #Abre el navegador para que el usuario compruebe manualmente que funciona
     echo "abriendo el navegador..."
     echo "pulsar CTRL+C para detener el servidor de desarrollo Flask"
-    python3 webserviceanalizadordesentimiento.py
+    python3 /var/www/EHU_analisisdesentimiento/public_html/webserviceanalizadordesentimiento.py
     firefox http://127.0.0.1:5000/
 }
 
