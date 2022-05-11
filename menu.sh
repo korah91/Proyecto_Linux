@@ -494,7 +494,14 @@ function controlarIntentosConexionSSH()
     ficheros=$(ls /var/log/ | grep -e "^auth.log")
     for fichero in $ficheros
     do
-        notifssh=$(less /var/log/$fichero | grep "sshd" | tr -s ' ' '@')
+        esgz=$(echo /var/log/$fichero | grep ".gz")
+        if [ -z $esgz ]
+        then
+            notifssh=$(less /var/log/$fichero | grep "sshd" | tr -s ' ' '@')
+        else
+            notifssh=$(zcat /var/log/$fichero | grep "sshd" | tr -s ' ' '@')
+        fi
+
         for notif in $notifssh
         do
             status=$(echo $notif | cut -d@ -f6)
