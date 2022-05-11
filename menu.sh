@@ -105,25 +105,31 @@ function ejecutarEntornoVirtual(){
     sudo apt -y upgrade
     # Descargamos el pip de python y otras herramientas de desarrollo python
     sudo apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv python3-virtualenv
-    
-    # Creamos el entorno de desarrollo
-    echo "Creando el Entorno..."
+
     # y si no esta?
     if [[ -d /var/www/EHU_analisisdesentimiento/public_html ]]
-    then 
-        cd /var/www/EHU_analisisdesentimiento/public_html
-        virtualenv -p python3 venv
-        #Activamos el entorno de desarrollo
-        source venv/bin/activate
+    then
+        echo "Ya existe /var/www/EHU_analisisdesentimiento/public_html"
     else
         echo "Creando la carpeta necesaria..."
         sudo mkdir -p /var/www/EHU_analisisdesentimiento/public_html
         echo "Concediendo permisos a l directorio..."
         sudo chown -R $USER:$USER /var/www/EHU_analisisdesentimiento/public_html
-        
+    fi
+
+    if [[ -d /var/www/EHU_analisisdesentimiento/public_html/venv ]]
+    then
+        echo "El entorno virtual ya está creado"
+        echo "Activando entorno virtual ..."
+        cd /var/www/EHU_analisisdesentimiento/public_html
+        source venv/bin/activate
+    else
+        # Creamos el entorno de desarrollo
+        echo "Creando entorno virtual ..."
         cd /var/www/EHU_analisisdesentimiento/public_html
         virtualenv -p python3 venv
         #Activamos el entorno de desarrollo
+        echo "Activando entorno virtual ..."
         source venv/bin/activate
     fi
 }
@@ -146,19 +152,23 @@ function instalarLibreriasEntornoVirtual()
          
     #Comprobar si las librerias ya estan instaladas
     # si no, instalar
-    aux=$(pip show transformers[torch] 2>&1 | grep "Package(s) not found")
+    aux=$(pip show transformers 2>&1 | grep "Package(s) not found")
     if [ -z "$aux" ]
     then
-        echo "las librerias Transformers y PyTorch ya estaban instaladas. "
+        echo "Las librería Transformers ya estaba instalada "
     else
         echo "instalando las librerias necesarias..."
         pip install transformers[torch]
     fi
-     
-    #desactivar el entorno virtual
-    echo "desactivando el entorno virtual..."
-    deactivate
-    echo "entorno virtual desactivado"
+
+    aux=$(pip show torch 2>&1 | grep "Package(s) not found")
+    if [ -z "$aux" ]
+    then
+        echo "Las librería PyTorch ya estaba instalada "
+    else
+        echo "instalando las librerias necesarias..."
+        pip install transformers[torch]
+    fi
 }
 
 
@@ -194,7 +204,7 @@ function instalarFlask()
      
     #Comprobar si flask ya está instalado
     #Si no, instalarlo
-    aux=$(pip show flask | grep "Package(s) not found: flask")
+    aux=$(pip show flask 2>&1 | grep "Package(s) not found: flask")
     if [ -z "$aux" ]
     then
         echo "flask ya estaba instalado"
@@ -468,7 +478,7 @@ function verNginxLogs()
  {
     #Si ha habido algún error, el usuario deberá comprobar los siguientes ficheros:"
     echo "Verifica los registros de error de Nginx:"
-    sudo head -n 100 /var/log/nginx/error.log
+    sudo tail -n 100 /var/log/nginx/error.log
 }
 
 
