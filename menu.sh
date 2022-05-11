@@ -502,13 +502,13 @@ function salirMenu()
 {
     echo "Adios :) \n"
     echo "Joel García, Diego Esteban, Maria Bogajo y Paula Pinto"
-
+    exit 0
 }
 
 
 ### Main ###
 opcionmenuppal=0
-while test $opcionmenuppal -ne 22
+while test $opcionmenuppal -ne 23
 do
     #Muestra el menu
     echo -e "###################################################"
@@ -560,6 +560,7 @@ do
             20) verNginxLogs;;
             21) controlarIntentosConexionSSH;;
             22) salirMenu;;
+            23) fin;;
             *) ;;
     esac 
 done 
