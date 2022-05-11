@@ -102,6 +102,7 @@ function crearNuevaUbicacion(){
 function ejecutarEntornoVirtual(){
     # Actualizamos todo
     echo "Actualizando e instalando librerias..."
+    sudo apt update
     # La siguiente linea la descomento porque tardara muchisimo y no es imprescindible
     #sudo apt -y upgrade
     # Descargamos el pip de python y otras herramientas de desarrollo python
