@@ -157,7 +157,7 @@ function instalarLibreriasEntornoVirtual()
     aux=$(pip show transformers 2>&1 | grep "Package(s) not found")
     if [ -z "$aux" ]
     then
-        echo "Las librería Transformers ya estaba instalada "
+        echo "La librería Transformers ya estaba instalada "
     else
         echo "instalando las librerias necesarias..."
         pip install transformers[torch]
@@ -166,7 +166,7 @@ function instalarLibreriasEntornoVirtual()
     aux=$(pip show torch 2>&1 | grep "Package(s) not found")
     if [ -z "$aux" ]
     then
-        echo "Las librería PyTorch ya estaba instalada "
+        echo "La librería PyTorch ya estaba instalada "
     else
         echo "instalando las librerias necesarias..."
         pip install transformers[torch]
@@ -245,7 +245,7 @@ function instalarGunicorn()
     
     #Comprobar si gunicorn ya está instalado
     #Si no, instalarlo
-    aux=$(pip show gunicorn | grep "Package(s) not found: gunicorn")
+    aux=$(pip show gunicorn 2>&1 | grep "Package(s) not found: gunicorn")
     if [ -z "$aux" ]
     then
         echo "gunicorn ya estaba instalado"
