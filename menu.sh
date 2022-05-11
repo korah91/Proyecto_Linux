@@ -319,7 +319,7 @@ function pasarPropiedadyPermisos()
     if [ -z "$aux" ] # Si no lo son, grep devolverá un string vacío
     then 
         echo "Estableciendo permisos ..."
-        chmod -R 775 /var/www
+        sudo chmod -R 775 /var/www
         echo "Se han establecido los permisos"
     else
         echo "Los permisos ya estaban establecidos"
