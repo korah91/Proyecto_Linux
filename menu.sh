@@ -491,7 +491,34 @@ function controlarIntentosConexionSSH()
 {
     #Muestra por pantalla los intentos de conexión
     echo "Imprimiendo los intentos de conexion..."
-    less /var/log/auth.log | grep "sshd"
+    ficheros=$(ls /var/log/ | grep -e "^auth.log")
+    for fichero in $ficheros
+    do
+        notifssh=$(less /var/log/$fichero | grep "sshd" | tr -s ' ' '@')
+        for notif in $notifssh
+        do
+            status=$(echo $notif | cut -d@ -f6)
+            if [ $status = "Failed" ]
+            then
+                status="fail"
+            else
+                if [ $status = "Accepted" ]
+                then
+                    status="accept"
+                fi
+            fi
+
+            if [ $status = "fail" -o $status = "accept" ]
+            then
+                nombre=$(echo $notif | cut -d@ -f9)
+                mes=$(echo $notif | cut -d@ -f1)
+                dia=$(echo $notif | cut -d@ -f2)
+                hora=$(echo $notif | cut -d@ -f3)
+                echo "Status: [$status] Account name: $nombre Date: $mes, $dia, $hora"
+            fi
+        done
+    done
+    echo "Esos eran todos los intentos de conexion"
 }
 
 
