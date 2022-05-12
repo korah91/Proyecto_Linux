@@ -594,7 +594,6 @@ do
             20) verNginxLogs;;
             21) controlarIntentosConexionSSH;;
             22) salirMenu;;
-            23) fin;;
             *) ;;
     esac 
 done 
