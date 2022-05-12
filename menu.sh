@@ -413,7 +413,7 @@ function configurarNginxProxyInverso()
         proxy_pass  http://127.0.0.1:5000;
     }
 }
-" > /etc/nginx/conf.d/flask.conf
+" | sudo tee -a /etc/nginx/conf.d/flask.conf
         echo "Se ha creado flask.conf en /etc/nginx/conf.d/flask.conf"
     else
         echo "flask.conf ya existe"
