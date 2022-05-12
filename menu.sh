@@ -349,7 +349,7 @@ Environment=\"PATH=/var/www/EHU_analisisdesentimiento/public_html/venv/bin\"
 ExecStart=/var/www/EHU_analisisdesentimiento/public_html/venv/bin/gunicorn --bind 0.0.0.0:5000 wsgi:app
 [Install]
 WantedBy=multi-user.target
-" > /etc/systemd/system/flask.service
+" | sudo tee -a /etc/systemd/system/flask.service
         echo "Se ha creado flask.service en /etc/systemd/system/flask.service"
         echo ""
         echo "Creado flask.service en /etc/systemd/system/flask.service"
